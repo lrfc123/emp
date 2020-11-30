@@ -49,6 +49,12 @@ public class test {
     public void test5(){
         List<Emp> allSearch = empService.findAllSearch(1, 4, "name", "eq", "小黑");
         System.out.println(allSearch);
+    
+}
+    @Test
+    public void test16(){
+        int i = 100;
+        int j = 99;
     }
 
 }
