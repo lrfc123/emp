@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.dao.EmpDao">
+
+    <resultMap id="emp" type="com.baizhi.entity.Emp">
+        <id column="eid" property="id"/>
+        <result column="ename" property="name"/>
+        <result column="age" property="age"/>
+        <result column="sex" property="sex"/>
+        <result column="salary" property="salary"/>
+        <result column="deptid" property="deptid"/>
+
+        <association property="dept" javaType="com.baizhi.entity.Dept">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="createDate" property="createDate"/>
+        </association>
+    </resultMap>
+
+    <select id="queryAll" resultMap="emp">
+        select e.id eid,e.name ename,e.age,e.sex,e.salary,e.deptid,
+        d.id,d.name,d.createDate
+        from t_emp e join t_dept d
+        on e.deptid=d.id
+    </select>
+
+    <!--分页-->
+    <select id="findAll" resultMap="emp">
+        select e.id eid,e.name ename,e.age,e.sex,e.salary,e.deptid,
+        d.id,d.name,d.createDate
+        from t_emp e join t_dept d
+        on e.deptid=d.id
+        limit #{begin},#{end}
+    </select>
+
+    <!--总条数-->
+    <select id="count" resultType="Integer">
+        select count(id) from t_emp
+    </select>
+
+    <!--添加-->
+    <insert id="save" parameterType="com.baizhi.entity.Emp">
+        insert into t_emp
+        values(#{id},#{name},#{age},#{sex},#{salary},#{dept.id})
+    </insert>
+
+    <!--修改-->
+    <update id="update" parameterType="com.baizhi.entity.Emp">
+        update t_emp
+        set name=#{name},age=#{age},sex=#{sex},salary=#{salary},deptid=#{dept.id}
+        where id=#{id}
+    </update>
+
+    <!--删除-->
+    <delete id="delete" parameterType="String">
+        delete from t_emp
+        where id=#{id}
+    </delete>
+
+    <!--搜索的查所有-->
+    <select id="findAllSearch" resultMap="emp">
+        select e.id eid,e.name ename,e.age,e.salary,e.sex,e.deptid,
+        d.id,d.name,d.createDate
+        from t_emp e join t_dept d
+        on e.deptid = d.id
+        where
+        <if test="searchField=='dept.id'">
+            e.deptid
+            <if test="searchOper=='eq'">
+                = #{searchString}
+            </if>
+            <if test="searchOper=='cn'">
+                like concat('%',#{searchString},'%')
+            </if>
+        </if>
+        <if test="searchField!='dept.id'">
+            e.${searchField}
+            <if test="searchOper=='eq'">
+                =  #{searchString}
+            </if>
+            <if test="searchOper=='cn'">
+                like concat('%',#{searchString},'%')
+            </if>
+        </if>
+        limit #{start},#{rows}
+    </select>
+
+    <!--搜索的总页数-->
+    <select id="findSearchTotalCounts" resultType="Integer">
+        select count(e.id)
+        from t_emp e join t_dept d
+        on e.deptid = d.id
+        where
+        <if test="searchField=='dept.id'">
+            e.deptid
+            <if test="searchOper=='eq'">
+                = #{searchString}
+            </if>
+            <if test="searchOper=='cn'">
+                like concat('%',#{searchString},'%')
+            </if>
+        </if>
+        <if test="searchField!='dept.id'">
+            e.${searchField}
+            <if test="searchOper=='eq'">
+                =  #{searchString}
+            </if>
+            <if test="searchOper=='cn'">
+                like concat('%',#{searchString},'%')
+            </if>
+        </if>
+    </select>
+
+</mapper>
