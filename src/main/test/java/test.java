@@ -59,6 +59,7 @@ public class test {
     @Test
     public void test17(){
         System.out.println("你好！");
-    }
+        System.out.println("你也好！");
+    } 
 
 }
