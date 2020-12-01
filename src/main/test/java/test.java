@@ -56,5 +56,9 @@ public class test {
         int i = 100;
         int j = 99;
     }
+    @Test
+    public void test17(){
+        System.out.println("你好！");
+    }
 
 }
